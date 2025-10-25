@@ -13,7 +13,7 @@ return (
 value={value}
 onChange={(e) => { setValue(e.target.value); onTyping(); }}
 onKeyDown={(e) => { if (e.key === 'Enter') handleSend(); }}
-placeholder="Type a message..."
+placeholder="Type a message....."
 />
 <button onClick={handleSend}>Send</button>
 </div>
