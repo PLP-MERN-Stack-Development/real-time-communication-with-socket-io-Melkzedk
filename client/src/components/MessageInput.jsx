@@ -1,3 +1,4 @@
+// client/src/components/MessageInput.jsx
 import React, { useState } from 'react';
 export default function MessageInput({ onSend, onTyping }) {
 const [value, setValue] = useState('');
