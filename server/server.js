@@ -17,3 +17,6 @@ cors: { origin: process.env.CLIENT_URL || '*' }
 });
 // attach socket handlers
 require('./socket')(io);
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => console.log(`Server listening on ${PORT}`));
+})();
