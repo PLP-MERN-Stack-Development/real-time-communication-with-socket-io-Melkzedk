@@ -5,7 +5,7 @@ const cors = require('cors');
 const { Server } = require('socket.io');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
-const messageRoutes = require('./routes/message'); // 👈 ADD THIS
+const messageRoutes = require('./routes/message');
 
 const app = express();
 const server = http.createServer(app);
