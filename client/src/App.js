@@ -1,12 +1,19 @@
 import React from 'react';
-import { AuthProvider } from './context/AuthContext';
-import Chat from './pages/Chat';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import MessageInput from './components/MessageInput';
+
 function App() {
-// For quick start, set user via localStorage or a simple login form
-return (
-<AuthProvider>
-<Chat />
-</AuthProvider>
-);
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/chat" element={<MessageInput />} />
+      </Routes>
+    </Router>
+  );
 }
+
 export default App;
