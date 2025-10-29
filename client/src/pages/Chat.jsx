@@ -1,3 +1,4 @@
+// client/src/pages/Chat.jsx
 import React, { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { createSocket } from '../socket/socket';
@@ -21,54 +22,41 @@ export default function Chat() {
       s.emit('join', { userId: user.id, username: user.username, room: 'global' });
     });
 
-    // 🔄 Listen for new messages (same as backend event name)
-    s.on('newMessage', (msg) => {
-      setMessages((prev) => [...prev, msg]);
-    });
+    s.on('newMessage', (m) => setMessages((prev) => [...prev, m]));
 
-    // 📝 Typing event
-    s.on('typing', ({ username }) => {
+    s.on('typing', ({ userId, username }) => {
       setTypingUsers((t) => [...new Set([...t, username])]);
-      // remove after delay
       setTimeout(() => setTypingUsers((t) => t.filter((u) => u !== username)), 2000);
     });
 
-    // 👥 Presence info
-    s.on('presence', (users) => console.log('presence:', users));
+    s.on('presence', (users) => console.log('presence', users));
 
     return () => {
       s.disconnect();
     };
   }, [user]);
 
-  // 📨 Send message
   const sendMessage = (text) => {
     if (!socket) return;
-    const payload = { room: 'global', userId: user.id, text };
+    const payload = { room: 'global', userId: user.id, text }; // ✅ FIXED KEY
     socket.emit('message', payload);
   };
 
-  // 💬 Send typing indicator
   const sendTyping = () => {
     if (!socket) return;
-    socket.emit('typing', {
-      room: 'global',
-      userId: user.id,
-      username: user.username,
-    });
+    socket.emit('typing', { room: 'global', userId: user.id, username: user.username });
   };
 
   return (
-    <div className="chat container py-3">
-      <h4 className="text-center mb-3">Global Chat</h4>
-      <main className="border rounded p-3 bg-white" style={{ height: '60vh', overflowY: 'auto' }}>
-        <MessageList messages={messages} />
-        {typingUsers.length > 0 && (
-          <div className="text-muted small">
-            {typingUsers.join(', ')} {typingUsers.length > 1 ? 'are' : 'is'} typing...
-          </div>
-        )}
-      </main>
+    <div className="chat container mt-3">
+      <h4 className="mb-3">Global Chat</h4>
+
+      <MessageList messages={messages} />
+
+      <div className="text-muted small">
+        {typingUsers.length > 0 && `${typingUsers.join(', ')} typing...`}
+      </div>
+
       <MessageInput onSend={sendMessage} onTyping={sendTyping} />
     </div>
   );

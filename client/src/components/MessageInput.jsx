@@ -1,13 +1,32 @@
-// client/src/components/MessageInput.jsx
 import React, { useState } from 'react';
 
-export default function MessageInput({ onSend, onTyping = () => {} }) {
+export default function MessageInput({ onSend, onTyping }) {
   const [value, setValue] = useState('');
+  const [sending, setSending] = useState(false);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!value.trim()) return;
-    onSend(value.trim());
-    setValue('');
+
+    setSending(true);
+    try {
+      // Handle both async and sync send functions
+      if (typeof onSend === 'function') {
+        await Promise.resolve(onSend(value.trim()));
+      } else {
+        console.error('onSend is not a function');
+      }
+      setValue('');
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleTyping = () => {
+    if (typeof onTyping === 'function') {
+      onTyping();
+    }
   };
 
   return (
@@ -18,15 +37,20 @@ export default function MessageInput({ onSend, onTyping = () => {} }) {
         value={value}
         onChange={(e) => {
           setValue(e.target.value);
-          onTyping(); // safe even if no function passed
+          handleTyping();
         }}
         onKeyDown={(e) => {
           if (e.key === 'Enter') handleSend();
         }}
-        placeholder="Type a message..."
+        placeholder={sending ? 'Sending...' : 'Type a message...'}
+        disabled={sending}
       />
-      <button className="btn btn-primary" onClick={handleSend}>
-        Send
+      <button
+        className="btn btn-primary"
+        onClick={handleSend}
+        disabled={sending || !value.trim()}
+      >
+        {sending ? 'Sending...' : 'Send'}
       </button>
     </div>
   );
