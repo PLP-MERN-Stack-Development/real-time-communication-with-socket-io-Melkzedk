@@ -1,7 +1,7 @@
 // client/src/components/MessageInput.jsx
 import React, { useState } from 'react';
 
-export default function MessageInput({ onSend, onTyping }) {
+export default function MessageInput({ onSend, onTyping = () => {} }) {
   const [value, setValue] = useState('');
 
   const handleSend = () => {
@@ -16,11 +16,18 @@ export default function MessageInput({ onSend, onTyping }) {
         type="text"
         className="form-control"
         value={value}
-        onChange={(e) => { setValue(e.target.value); onTyping(); }}
-        onKeyDown={(e) => { if (e.key === 'Enter') handleSend(); }}
+        onChange={(e) => {
+          setValue(e.target.value);
+          onTyping(); // safe even if no function passed
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') handleSend();
+        }}
         placeholder="Type a message..."
       />
-      <button className="btn btn-primary" onClick={handleSend}>Send</button>
+      <button className="btn btn-primary" onClick={handleSend}>
+        Send
+      </button>
     </div>
   );
 }
