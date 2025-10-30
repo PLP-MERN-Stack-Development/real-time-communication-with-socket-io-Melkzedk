@@ -6,16 +6,20 @@ function Register() {
   const [form, setForm] = useState({ username: '', password: '' });
   const navigate = useNavigate();
 
+  // Change this to your Render backend URL
+  const API_URL = 'https://real-time-communication-with-socket-io-d2o0.onrender.com/api';
+
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', form);
+      const res = await axios.post(`${API_URL}/auth/register`, form);
       localStorage.setItem('token', res.data.token);
       navigate('/chat');
     } catch (err) {
-      alert('Registration failed');
+      console.error(err.response || err);
+      alert('Registration failed. Please check your credentials or try again.');
     }
   };
 
