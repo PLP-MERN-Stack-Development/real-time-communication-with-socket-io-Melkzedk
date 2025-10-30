@@ -1,71 +1,51 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
-export default function Register() {
-  const navigate = useNavigate();
+function Register() {
   const [form, setForm] = useState({ username: '', password: '' });
-  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    setError('');
-
     try {
       const res = await axios.post('http://localhost:5000/api/auth/register', form);
       localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-      navigate('/chat'); // redirect to MessageInput page
+      navigate('/chat');
     } catch (err) {
-      setError(err.response?.data?.msg || 'Registration failed');
+      alert('Registration failed');
     }
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: 400 }}>
-      <h3 className="text-center mb-3">Register</h3>
+    <div className="container mt-4">
+      <h3>Register</h3>
       <form onSubmit={handleSubmit}>
-        {error && <div className="alert alert-danger">{error}</div>}
-        <div className="mb-3">
-          <label className="form-label">Username</label>
-          <input
-            type="text"
-            name="username"
-            className="form-control"
-            value={form.username}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Password</label>
-          <input
-            type="password"
-            name="password"
-            className="form-control"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button className="btn btn-primary w-100" type="submit">
-          Register
-        </button>
+        <input
+          type="text"
+          name="username"
+          className="form-control my-2"
+          placeholder="Username"
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          className="form-control my-2"
+          placeholder="Password"
+          onChange={handleChange}
+          required
+        />
+        <button type="submit" className="btn btn-primary">Register</button>
+        <p className="mt-2">
+          Already have an account? <Link to="/login">Login here</Link>
+        </p>
       </form>
-      <p className="text-center mt-3">
-        Already have an account?{' '}
-        <span
-          className="text-primary"
-          style={{ cursor: 'pointer' }}
-          onClick={() => navigate('/login')}
-        >
-          Login
-        </span>
-      </p>
     </div>
   );
 }
+
+export default Register;
