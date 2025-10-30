@@ -1,22 +1,34 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useContext } from "react";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ username: '', password: '' });
+  const { login } = useContext(AuthContext);
+  const [form, setForm] = useState({ username: "", password: "" });
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', form);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-      navigate('/chat');
+      const res = await axios.post("http://localhost:5000/api/auth/login", form);
+      const userData = res.data.user;
+      const token = res.data.token;
+
+      // Save token
+      localStorage.setItem("token", token);
+
+      // Use context login to normalize user and update state
+      login(userData);
+
+      // Redirect to chat
+      navigate("/chat");
     } catch (err) {
-      alert('Login failed');
+      console.error("❌ Login failed:", err);
+      alert("Login failed");
     }
   };
 
@@ -40,7 +52,9 @@ function Login() {
           onChange={handleChange}
           required
         />
-        <button type="submit" className="btn btn-primary">Login</button>
+        <button type="submit" className="btn btn-primary">
+          Login
+        </button>
         <p className="mt-2">
           Don’t have an account? <Link to="/register">Register here</Link>
         </p>
