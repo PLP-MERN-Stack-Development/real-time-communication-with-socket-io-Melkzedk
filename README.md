@@ -13,20 +13,6 @@ Live demo: https://chatwebapp254.netlify.app/
 
 ## Quick Start
 
-1. Install dependencies
-
-```sh
-# from project root
-npm install
-
-# client
-cd client
-npm install
-
-# server
-cd ../server
-npm install
-
 PROJECT SCREENSHOTS
 <img width="1906" height="824" alt="Screenshot 2025-10-31 140728" src="https://github.com/user-attachments/assets/99dab2d1-004c-4e88-b505-8ff1d8e222ad" />
 <img width="1910" height="659" alt="Screenshot 2025-10-31 140738" src="https://github.com/user-attachments/assets/d5aec77c-f830-45ae-a5fe-a1017fa598be" />
