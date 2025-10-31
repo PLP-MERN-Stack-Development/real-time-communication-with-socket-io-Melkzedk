@@ -1,4 +1,3 @@
-// ...existing code...
 # Chat Web App
 
 A simple real-time chat web application (React + Express + Socket.io).
